@@ -1,0 +1,373 @@
+import g
+import random
+import math
+#--
+sco=0
+set_o=0
+boot_t=0
+t=1
+down_s=0
+rightm=0
+leftm=0
+downm=0
+key=0
+cenx=0
+ceny=0
+p=1
+stopt=0
+chc=1
+cwo=0
+ranw=""
+tit=0
+r=[[""],[""],[""],[""],[""],[""],[""],[""],[""],[""]]
+#1-5 6-10
+cell= [[0 for i in range(20)] for j in range(10)]
+celld= [[0 for i in range(20)] for j in range(10)]
+cells=[[0 for i in range(20)] for j in range(10)]
+chcell=[[0 for i in range(20)] for j in range(10)]
+#---
+letter=[0,"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+#---
+cell[1][1]=52
+cell[1][2]=27
+cenx=1
+ceny=1
+#g.drawGrid() #グリッド線の描画
+g.setColor(255,0,0) #描画色の設定
+main()
+#---
+def main():
+    global tit
+    if tit==0:
+        title()
+        if g.getkey("s")==1:
+            tit=1
+    elif tit==1:
+        time()
+        tit=2
+    else:
+        move()
+        draw()
+    g.setTimeout(main,50)
+#---
+def title():
+    red=random.randint(0,255)
+    green=random.randint(0,255)
+    blue=random.randint(0,255)
+    g.setColor(red,green,blue)
+    g.setTextSize(120)
+    g.drawString("シスタン",50,100)
+    g.setColor(0,0,0)
+    g.setTextSize(50)
+    g.drawString("puzzle",100,150)
+    g.setTextSize(15)
+    g.drawString("SYSTEM英単語に載っている単語を揃えて。",100,210)
+    g.drawString("sボタンでスタート！",100,300)
+def draw():
+    g.setColor(200,200,255)
+    g.clear()
+    g.fillRect(0,0,300,300)
+    for iy in range(20):
+        for ix in range(10):
+            g.setColor(0,0,0)
+            g.setTextSize(15)
+            if cell[ix][iy]==0:
+                if iy==1 and (ix==4 or ix==5):
+                    g.drawString("@",ix*15-1,iy*15+15)
+                else:
+                    g.drawString("_",ix*15,iy*15+10)
+            else:
+                if cell[ix][iy]>=27:
+                    g.drawString(letter[cell[ix][iy]-26],ix*15,iy*15+10)
+                else:
+                    g.drawString(letter[cell[ix][iy]],ix*15,iy*15+10)
+    g.setColor(255,200,255)
+    g.fillRect(150,100,150,200)
+    g.setTextSize(20)
+    g.setColor(255,100,200)
+    g.drawString("ランダム単語",170,50)
+    g.drawString(str(ranw),150,80)
+    g.setTextSize(15)
+    g.drawString("そろえた単語数"+str(cwo),170,125)
+    g.setTextSize(15)
+    g.setColor(100,150,255)
+    for i in range(10):
+        if r[9-i]=="leap":
+            red=random.randint(0,255)
+            green=random.randint(0,255)
+            blue=random.randint(0,255)
+            g.setColor(red,green,blue)
+        g.drawString(r[9-i],250,i*15+150)
+#---
+def set():
+    global cell,cenx,ceny,celld,chcell
+    for iy in range(20):
+        for ix in range(10):
+            if cell[ix][iy]>=27:
+                cell[ix][iy]=cell[ix][iy]-26
+    celld= [[0 for i in range(20)] for j in range(10)]
+    set_o=1
+    ch=random.randint(27,52)
+    cell[4][1]=ch
+    ch=random.randint(27,52)
+    cell[5][1]=ch
+    cenx=4
+    ceny=1
+    
+    set_o=0
+def turn():
+    
+    global cell,celld,bool_t,t,cenx,ceny
+    celld= [[0 for i in range(20)] for j in range(10)]
+    celld[cenx][ceny]=cell[cenx][ceny]
+    
+    bool_t=1
+    t=1
+    while bool_t:
+        bool_t=0
+        for iy in range(20):
+            for ix in range(10):
+                if cell[ix][iy]>=27 and bool_t==0:
+                    if ix!=cenx or iy!=ceny:
+                        disx=ix-cenx
+                        disy=iy-ceny
+                        for i in range(t):
+                            dx=1*disy
+                            dy=-1*disx
+                            disx=dx
+                            disy=dy
+                        if cenx+dx<0 or cenx+dx>9 or ceny+dy<0 or ceny+dy>19:
+                            t=t+1
+                            bool_t=1
+                            
+                        else:
+                            if cell[cenx+dx][ceny+dy]==0 or cell[cenx+dx][ceny+dy]>=27:
+                                celld[cenx+dx][ceny+dy]=cell[ix][iy]
+                            else:
+                                t=t+1
+                                bool_t=1
+    back()
+def chack():
+    global rightm,leftm,downm
+    rightm=100
+    leftm=100
+    downm=100
+    for iy in range(20):
+        for ix in range(10):
+            if cell[ix][iy]>=27:
+                if rightm==100:
+                    rightm=ix
+                    leftm=ix
+                    downm=iy
+                if rightm<ix:
+                    rightm=ix
+                if leftm>ix:
+                    leftm=ix
+                if downm<iy:
+                    downm=iy
+def back():
+    global cell,celld,word,letter
+    for iy in range(20):
+        for ix in range(10):
+            if cell[ix][iy]>=27:
+                cell[ix][iy]=0
+    for iy in range(20):
+        for ix in range(10):
+            if celld[ix][iy]>=27:
+                cell[ix][iy]=celld[ix][iy]
+    celld=[[0 for i in range(20)] for j in range(10)]
+def dele():
+    delew=""
+    delenu=int("0")
+    stopt=1
+    exit=0
+    cells=[[0 for i in range(20)] for j in range(10)]
+    global cells,cell,celld,chcell,chc,cwo,sco,ranw
+    celld=[[0 for i in range(20)] for j in range(10)]
+    for iy in range(20):
+        for ix in range(10):
+            if (chcell[ix][0]==1 or chcell[0][iy]==1) and cell[ix][iy]!=0:
+                for d in range(2):
+                    if d==0:
+                        for s in range(10-ix):
+                            if ix+s<=9:
+                                delew=delew+str(letter[cell[ix+s][iy]])
+                            for w in range(word_c):
+                                if delew==word[w]:
+                                    sco=sco+50
+                                    cwo=cwo+1
+                                    hi(word[w])
+                                    for ws in range(s+1):
+                                        if ix+s<=9:
+                                            cells[ix+ws][iy]=5
+                    else:
+                        for s in range(20-iy):
+                            if ix+s<=19:
+                                delew=delew+str(letter[cell[ix][iy+s]])
+                            for w in range(word_c):
+                                if delew==word[w]:
+                                    hi(word[w])
+                                    for ws in range(s+1):
+                                        if ix+s<=19:
+                                            cells[ix][iy+ws]=5
+                    delew=""
+                delew=""
+    chcell=[[0 for i in range(20)] for j in range(10)]
+    chc=0
+    stopt=1
+    ranw=word[random.randint(0,word_c)]
+    for iy in range(20):
+        for ix in range(10):
+            if cells[ix][iy]==5:
+                cell[ix][iy]=0
+                cells[ix][iy]=0
+    for i in range(10):
+        for iy in range(19):
+            for ix in range(10):
+                if cell[ix][iy+1]==0 and cell[ix][iy]!=0:
+                    chcell[ix][0]=0
+                    chcell[0][iy]=0
+                    chcell[ix][0]=1
+                    chcell[0][iy+1]=1
+                    cell[ix][iy+1]=cell[ix][iy]
+                    cell[ix][iy]=0
+    #print(chcell)
+    stopt=0
+def hi(text):
+    if text=="leap":
+        for i in range(10):
+            cell[i][19]=0
+    global r
+    r[0]=[]
+    for i in range(9):
+        r[i]=r[i+1]
+    del r[9]
+    r.append(text)
+    
+def reset():
+    celld=[[0 for i in range(20)] for j in range(10)]
+def move():
+    chack()
+    global key,cell,celld,cenx,ceny
+    celld=[[0 for i in range(20)] for j in range(10)]
+    
+    cantp=0
+    if key==0:
+        if g.getkey("a")==1 and 0<leftm:
+            for iy in range(20):
+                for ix in range(10):
+                    if cell[ix][iy]>=27:
+                        if cell[ix-1][iy]<=26 and cell[ix-1][iy]!=0:
+                            cantp=1
+                        celld[ix-1][iy]=cell[ix][iy]
+            if cantp==0:
+                cenx=cenx-1
+                back()
+            key=1
+            celld=[[0 for i in range(20)] for j in range(10)]
+            
+        cantp=0    
+        
+        if g.getkey("d")==1 and 9>rightm:
+            for iy in range(20):
+                for ix in range(10):
+                    if cell[ix][iy]>=27:
+                        if cell[ix+1][iy]<=26 and cell[ix+1][iy]!=0:
+                            cantp=1
+                        celld[ix+1][iy]=cell[ix][iy]
+            if cantp==0:
+                cenx=cenx+1
+                back()
+            key=1
+            celld=[[0 for i in range(20)] for j in range(10)]
+        
+        if g.getkey("w")==1:
+            turn()
+            key=1
+        if g.getkey("s")==1:
+            if downm<19:
+                down()
+            else:
+                stop()
+        #if g.getkey("f")==1:
+        #    print(chcell)
+    else:
+        if g.getkey("a")+g.getkey("d")+g.getkey("w")+g.getkey("s")==0:
+            key=0
+def stop():
+    global sco,cell,chcell,chc
+    chcell=[[0 for i in range(20)] for j in range(10)]
+    for iy in range(19):
+        for ix in range(10):
+            if cell[ix][iy+1]==0:
+                cell[ix][iy+1]=cell[ix][iy]
+                cell[ix][iy]=0
+    for iy in range(20):
+        for ix in range(10):
+            if cell[ix][iy]>=27:
+                chcell[ix][0]=1
+                chcell[0][iy]=1
+                cell[ix][iy]=cell[ix][iy]-26
+    sco=sco+1
+    chc=0
+    for iy in range(20):
+            for ix in range(10):
+                if chcell[ix][iy]==1:
+                   chc=chc+1
+    while chc:
+        for iy in range(20):
+            for ix in range(10):
+                if chcell[ix][iy]==1:
+                   chc=chc+1
+        
+        dele()
+    reset()
+    for iy in range(2):
+        for ix in range(10):
+            if cell[ix][iy]<=26 and cell[ix][iy]!=0:
+                over()
+    set()
+def time():
+    global p
+    if p==1 and stopt==0:
+        g.setTimeout(f,0)
+    if p==0 and stopt==0:
+        down()
+        p=1
+    g.setTimeout(time,500)
+def f():
+    global p
+    p=0
+def down():
+    global cenx,ceny,stopt,cell,celld
+    down_s=0
+    stopt=1
+    chack()
+    celld=[[0 for i in range(20)] for j in range(10)]
+    if set_o==0 and downm<19:
+        for iy in range(20):
+            for ix in range(10):
+                if cell[ix][iy]>=27:
+                    if cell[ix][iy+1]==0 or cell[ix][iy+1]>=27:
+                        celld[ix][iy+1]=cell[ix][iy]
+                    else:
+                        down_s=1
+        if down_s==0:
+            ceny=ceny+1
+            back()
+        else:
+            stop()
+    if downm==19:
+        stop()
+    stopt=0    
+def over():
+    global cell,celld,sco,cwo,r
+    celld=[[0 for i in range(20)] for j in range(10)]
+    cell=[[0 for i in range(20)] for j in range(10)]
+    r=[[""],[""],[""],[""],[""],[""],[""],[""],[""],[""]]
+    sco=0
+    cwo=0
+word=["follow","consider","increase","expect","decide","develop","provide","continue","include","remain","reach","allow","force","offer","realize","suggest","require","worry","wonder","cost","tend","depend","share","demand","support","hire","regardAB","baseAB","improve","recognize","notice","suppose","raise","prefer","cheer","suffer","describe","prevent","reduce","mistake","prepare","encourage","prove","treat","establish","relate","compare","spread","refer","supply","gain","destroy","apply","seek","search","claim","draw","refuse","respond","mention","judge","approach","admit","reflect","perform","bore","survive","represent","argue","grant","indicate","belong","acquire","reply","feed","escape","replace","reveal","surround","suit","estimate","aim","earn","decline","afford","confuse","graduate","vary","remove","insist","examine","remind","contributeAB","warn","connect","match","focus","reject","convince","associateABAB","rush","stress","attract","relyA","regret","adopt","shake","hurt","operate","extend","blame","consistA","persuade","admire","disappoint","expand","preserve","struggle","arrange","disturb","employ","engageAA","abandon","display","encounter","amuse","bother","concentrate","adapt","puzzle","appealA","combine","delay","repair","fascinate","Pardon","import","remark","reserve","amaze","frighten","release","rent","recoverA","suspect","deliver","identifyA","locate","manufacture","occupy","own","expose","translate","cure","perceive","adjust","alarm","assist","freeze","spoil","shift","embarrass","approve","weigh","stretch","participateA","exhibit","oweAB","celebrate","decorate","forgive","seat","injure","sew","result","feature","society","wheel","value","effect","individual","influence","fee","rate","sign","service","advance","laughter","material","industry","attempt","trade","progress","excuse","custom","passage","economy","track","transportation","official","sight","taste","range","appointment","patient","project","favor","appearance","risk","benefit","resident","relative","region","characteristic","pain","twin","occasion","principle","department","duty","scene","jam","spirit","medium","mass","audience","element","climate","revolution","quarter","furniture","brain","atmosphere","property","reward","security","delight","desert","background","trend","vote","impact","institution","interaction","alternative","harm","agency","capacity","minister","volunteer","access","quantity","branch","common","rough","likely","serious","particular","available","bilingual","ready","correct","familiar","physical","worth","involved","fantastic","private","obvious","native","complex","willing","current","male","proper","capable","independent","positive","pleasant","significant","former","chemical","upset","previous","calm","specific","conscious","superior","efficient","fundamental","narrow","reasonable","nervous","alike","domestic","negative","moral","eager","remarkable","evil","awake","aged","anxious","tough","nuclear","legal","curious","civil","recent","senior","afterward","nearly","therefore","exactly","possiblyV","contrary","occasionally","somehow","seldom","thus","throughout","unlike","besides","beyond","within","nor","unless","except","ought","in spite of","whether","explain","accept","produce","exist","express","add","avoid","marry","protect","affect","determine","solve","contain","discuss","ignore","guess","exchange","satisfy","complain","achieve","enable","intend","obtain","divide","annoy","differ","educate","borrow","invent","promote","advise","retire","permit","recommend","apologize","inform","oppose","trust","select","praise","handle","propose","breathe","criticize","overcome","possess","predict","publish","floating","recall","explore","pretend","absorb","resemble","tear","consume","compete","quit","announce","react","wander","text","generate","score","government","knowledge","nation","effort","period","population","purpose","behavior","lack","skill","quality","environment","role","attitude","author","research","opportunity","source","carbon","shape","advantage","method","habit","detail","distance","crowd","instance","desire","standard","task","generation","responsibility","experiment","athlete","decade","loss","fever","theory","statement","professor","function","surface","envelope","organization","policy","resource","contrast","flood","mate","goods","creature","structure","tradition","weight","charity","citizen","impression","cartoon","career","site","passenger","violence","income","temperature","majority","origin","literature","equipment","stranger","strength","planet","fiction","religion","pollution","wealth","document","profit","technique","emotion","phenomenon","horror","ladder","billion","status","youth","confidence","edge","household","scholar","survey","vocabulary","enemy","construction","lecture","instruction","crisis","instrument","crop","weapon","device","path","earthquake","stream","notion","yard","victim","fuel","ancestor","soil","debate","crime","colleague","shelf","analysis","universe","electricity","insect","web","storm","plenty","agriculture","gene","evidence","consequence","infant","leisure","cell","talent","advertising","extent","garbage","general","various","similar","complete","sharp","expensive","political","aware","ancient","medical","essential","huge","terrible","practical","entire","favorite","comfortable","minor","typical","ideal","principal","appropriate","empty","rapid","mental","excellent","convenient","potential","financial","enormous","rare","artificial","tiny","considerable","sensitive","intellectual","thirsty","polite","accurate","rude","sufficient","urban","temporary","primitive","permanent","elderly","severe","brief","mobile","latest","military","strict","solid","stupid","biological","probably","hardly","immediately","eventually","frequently","extremely","gradually","instantly","nevertheless","moreover","relatively","apparently","definitely","largely","mostly","approximately","overnight","accidentally","despite","proceed","ensure","interpret","cease","ban","obey","eliminate","resist","accompany","commit","pursue","demonstrate","bet","ruin","threaten","attachAB","reverse","restrict","compose","lean","substitute","trace","interrupt","confront","illustrate","arrest","stimulate","assure","consult","depress","crash","inspire","specializeA","cultivate","fulfill","transmit","found","clap","burst","bow","dismiss","breed","prohibit","oblige","qualifyA","invest","grasp","collapse","overlook","accuse","frustrate","depriveAB","astonish","register","correspond","cast","attributeAB","neglect","starve","resolve","imposeAB","convert","scare","constitute","appoint","imply","assign","nod","elect","transfer","robAB","capture","undertake","drown","split","resortA","descend","irritate","pronounce","equip","cheat","emerge","devote","heal","urge","envy","chase","prompt","withdraw","detect","interfereA","kid","launch","endanger","foster","diminish","spill","infect","stemAA","tap","embrace","proportion","contract","chest","treasure","stock","facility","sum","rank","democracy","emergency","protest","immigrant","vehicle","routine","stuff","row","profile","dawn","welfare","perspective","enthusiasm","faith","occupation","witness","kingdom","equivalent","objective","pile","shelter","trial","honor","territory","frame","border","statistics","enterprise","context","load","grain","review","prejudice","strain","trap","temper","slave","wound","divorce","tune","height","faculty","span","dimension","version","parallel","horizon","acquaintance","burden","basis","poison","constitution","administration","charm","organ","prey","venture","mission","inquiry","award","strip","distress","circulation","shade","stereotype","client","output","lord","convention","mine","craft","core","stroke","frontier","peer","vessel","disability","gravity","ethic","terminal","tide","abuse","guilty","vital","fellow","contemporary","annual","accustomed","steady","dull","keen","loose","delicate","internal","casual","mature","concrete","awful","exhausted","overall","tight","prime","genuine","modest","intimate","minimum","sophisticated","latter","bitter","peculiar","passive","ethnic","noble","vain","innocent","underlying","alien","relevant","inclined","awkward","brilliant","desperate","refreshing","thrilled","inner","consistent","plain","vivid","miserable","substantial","fondA","FALSE","lazy","precisely","meanwhile","altogether","lately","barely","scarcely","accordingly","deliberately","beneath","whereas","declare","alter","arise","transform","defeat","investigate","distinguish","bury","cope","occur","accomplish","hesitate","endure","conclude","guarantee","dominate","confirm","greet","entertain","defend","forbid","broadcast","sacrifice","punish","glance","retain","calculate","sinking","rescue","beg","define","deceive","convey","sustain","purchase","fade","regulate","distribute","enhance","chat","exceed","wipe","cooperate","inherit","unite","leap","exaggerate","conquer","melt","invade","modify","scatter","undergo","evaluate","bend","derive","screaming","gaze","pray","polish","classify","assert","grab","fold","sweep","whisper","imitate","stare","emphasize","rid","pour","vanish","restore","deserve","laboratory","conference","continent","insurance","crew","poverty","shortage","affair","exception","wage","wisdom","tax","evolution","barrier","category","unit","reputation","virtue","courage","sympathy","union","civilization","volume","blossom","era","dispute","tourism","mankind","murder","landscape","destination","tale","reform","muscle","prospect","corporation","colony","quarrel","profession","aspect","pause","conflict","privilege","prosperity","genius","seed","symptom","merit","layer","clue","circumstances","district","prison","companion","executive","Justice","procedure","ray","heaven","luxury","oxygen","fund","theme","boundary","ambition","forecast","psychology","labor","committee","physician","philosophy","affection","candidate","bomb","priority","obstacle","appetite","tension","tribe","budget","campaign","sorrow","satellite","insight","cough","fate","scheme","insult","inhabitant","fossil","motive","instinct","legend","empire","suburb","architecture","passion","cancer","logic","dozen","harvest","ingredient","hypothesis","voyage","editor","option","hemisphere","mechanism","anthropologist","tragedy","antibiotic","fare","debt","curriculum","component","wheat","usage","castle","famine","extinction","purse","folk","explosion","portion","organism","merchant","myth","incident","wildlife","congress","bay","penalty","heritage","diversity","thumb","geography","factor","discrimination","virus","statue","priest","pioneer","trait","bond","grocery","secretary","dialect","astronomy","youngster","substance","finding","strategy","lung","opponent","ritual","outcome","conservation","mammal","telescope","refugee","code","flavor","particle","nursing","suicide","habitat","bullying","dinosaur","council","gender","surgery","innovation","protein","nutrition","disaster","emission","ape","molecule","sweat","transplant","species","tip","cattle","density","concept","pale","precious","loyal","isolated","generous","tropical","reluctant","vague","vast","numerous","rural","widespread","complicated","visible","raw","remote","urgent","silly","striking","adequate","extraordinary","odd","abstract","mutual","excessive","ashamed","tremendous","inevitable","pure","stable","indifferent","aggressive","ultimate","shy","solar","profound","subtle","conservative","brave","intense","alcoholic","manual","cruel","rational","initial","immune","linguistic","crucial","verbal","optimistic","flexible","grateful","lively","overwhelming","abundant","selfish","ugly","racial","prominent","controversial","federal","ridiculous","imaginary","harsh","random","adolescent","uptodate","liberal","prior","moderate","fluent","elaborate","incredible","radical","acid","deaf","medieval","ecological","slight","ignorant","cognitive","absolutely","virtually","somewhat","merely","literally","seemingly","regardless","thoroughly","submitA","tempt","resign","conform","confine","assemble","dedicate","advocate","thrive","provoke","dictate","exploit","surrender","reproduce","acknowledge","swell","shed","wind","cite","digest","skip","bind","dissolve","implement","steer","congratulate","designate","violate","presume","recruit","coincide","enforce","displace","shrink","betray","comprise","indulge","penetrate","devastate","plunge","bounce","contradict","prescribe","oppress","cherish","illuminate","trigger","commute","induce","utilize","snap","donate","hatch","enclose","prevail","sigh","leak","compel","crush","comprehend","negotiate","persist","multiply","conceive","compensate","suspend","stir","soak","refine","arouse","precede","renderOC","mount","retreat","startle","dare","sphere","sequence","deposit","poll","caution","rage","formula","plot","scope","norm","disgust","compromise","supervisor","paradox","tissue","breakdown","Initiative","fabric","publicity","summit","flock","plague","haste","nap","ally","draft","spectacle","premise","asset","lag","therapy","reception","compound","blessing","sensation","recession","pole","outlook","endeavor","mercy","counterpart","session","spectrum","junk","worship","apt","humble","entitled","valid","faint","stiff","obscure","fierce","acute","idle","crude","jealous","pregnant","liable","stubborn","decent","marvelous","misleading","synthetic","classical","Muslim","anticipate","rub","dispose","refrain","accumulate","boost","drag","revise","scratch","roar","quote","bloom","insert","awaiting","dread","conceal","enrich","cling","surpass","suppress","portray","soaring","drain","glow","migrate","exclaim","exert","disguise","accelerate","dwell","integrate","weep","reassure","crawl","restrain","resent","yell","assess","carve","halt","inspect","tackle","omit","chew","resume","mold","accommodate","erase","inferred","revive","contemplate","rotate","disrupt","navigate","ache","discard","incorporate","overtake","supplement","manipulate","nourish","squeeze","depict","distract","disclose","enroll","nurture","speculate","prolong","execute","uncover","tremble","seize","abolish","scold","attain","utter","flee","offending","confess","postpone","drift","weave","install","twist","extract","bump","despise","tolerate","boast","flourishing","disregard","tease","reinforce","strive","coordinate","yawn","hug","combat","knit","fatigue","fame","mess","dignity","canal","drought","despair","interval","luggage","behalf","impulse","debris","beast","superstition","illusion","thread","intake","feast","transition","misery","radiation","log","consensus","deed","proverb","compliment","flame","anniversary","conscience","expedition","offspring","allowance","headline","treaty","monument","worm","remedy","encyclopedia","glimpse","personnel","triumph","arithmetic","selfesteem","microbe","odds","chaos","destiny","diameter","lottery","souvenir","trail","ratio","sword","whistle","sentiment","chore","courtesy","mayor","surveillance","trash","prestige","headquarters","wilderness","orbit","bias","republic","bargain","domain","fragment","galaxy","lap","deadline","bullet","pedestrian","wit","nuisance","criteria","hardship","glory","pavement","navy","script","pension","province","surplus","moisture","patch","altitude","thermometer","tuition","troop","primate","flaw","nephew","garment","diagnosis","commerce","antiquity","fraction","irony","nightmare","defect","certificate","decay","erosion","recipe","skeleton","grace","landmark","dementia","flesh","collision","hazard","tomb","injection","breakthrough","leather","jewelry","cue","ambulance","estate","commodity","departure","phase","thief","saint","sculpture","grief","lane","predator","fluid","incentive","bride","intervention","margin","biography","consent","volcano","rebel","metaphor","legislation","lightning","pesticide","column","rumor","dust","dialogue","kindergarten","diabetes","obesity","patent","chapter","palace","laundry","ward","outbreak","equation","archaeologist","corruption","germ","revenue","spouse","epidemic","mortality","syndrome","retail","dose","beverage","Metabolism","hybrid","scent","inflammation","pill","grave","fertile","hostile","indispensable","oriented","splendid","competent","supreme","straightforward","sacred","bold","uneasy","neat","shallow","fake","superficial","absurd","fragile","respectable","magnificent","infinite","comprehensive","steep","gross","subsequent","sincere","toxic","neutral","diligent","sore","contaminated","ambiguous","oral","restless","rotten","vigorous","immense","metropolitan","punctual","solitary","collective","diplomatic","nasty","helpless","explicit","bankrupt","eternal","sole","sour","notable","affluent","naked","vocal","feminine","vacant","exotic","rigid","humid","outstanding","addicted","vulnerable","spontaneous","greedy","trivial","per capita","inherent","promising","physiological","clinical","chronic","geological","countless","innate","alert","autonomous","simultaneously","utterly","drastically","necessarily","thereby","frankly","namely","hence","via","owing","clarify","smash","mourn","summon","shatter","linger","lament","endowed","rejoice","allocate","slap","contend","swear","discern","degrade","erect","testify","spur","roam","frown","lure","defy","stroll","rattle","reconcile","blur","soothe","impair","comply","pierce","stumble","hinder","mock","embody","stalk","proclaim","applaud","inflict","merge","evacuated","undone","poke","haunted","adhere","compile","wither","stun","choke","deteriorate","dump","murmur","delete","inhibit","divert","tame","reap","affirm","immersed","expire","embark","vow","foresee","adore","yearn","undermine","suck","pledge","intrude","sue","distort","extinguish","preach","curb","withstand","dip","recite","thrust","plead","humiliate","discharge","condemn","retrieve","shrug","evoke","fetch","flatter","prose","textile","timber","masterpiece","riot","carriage","apparatus","fuss","deficiency","heir","equator","petroleum","witch","vapor","probe","expertise","scorn","prophet","breeze","sin","surge","complement","queue","stake","ambassador","jury","cluster","lump","meadow","feat","temperament","chill","appliance","predecessor","entity","hospitality","narrative","segment","catastrophe","monarch","constraint","amendment","cosmos","aisle","hierarchy","toll","transaction","burglar","tyranny","parasite","intuition","communist","legacy","vein","discourse","dairy","artifact","outlet","apprehension","melancholy","novelty","specimen","hygiene","tactics","monopoly","token","aristocracy","revenge","activist","rhetoric","entrepreneur","census","verge","advent","analogy","irrigation","coverage","cuisine","menace","peril","limb","assault","hatred","autonomy","cram","subsidy","empathy","slang","posture","Ideology","curse","tumor","intersection","duration","deforestation","precaution","bunch","shortcoming","aspiration","psychiatrist","shipping","senator","statesman","subordinate","vacuum","quest","meditation","subscriber","riddle","rag","rust","sanitation","midst","mischief","proficiency","recollection","latitude","friction","botanist","heredity","contempt","anatomy","integrity","cargo","bribe","eruption","funeral","deficit","bulk","millionaire","ash","realm","plantation","plow","vending","orphan","neuron","vegetation","warrior","mutation","sewage","paradigm","protocol","skyscraper","accord","bureaucrat","array","clash","torture","reign","thesis","digit","agenda","onset","peasant","ultraviolet","renowned","transparent","dim","legitimate","adverse","swift","naive","dumb","gloomy","furious","earnest","terrific","vertical","wicked","subjective","enlightened","authentic","brutal","dizzy","sheer","naughty","damp","static","doomed","respiratory","innumerable","clumsy","aesthetic","obsessed","detached","wrecked","reckless","arrogant","preoccupied","gigantic","conspicuous","slender","manifest","tidy","skeptical","notorious","anonymous","monotonous","ample","trim","savage","coherent","eloquent","foul","juvenile","compulsory","prone","arbitrary","ingenious","divine","tender","outraged","instrinsic","paralyzed","compatible","patriotic","eminent","potent","insane","staple","secondhand","indigenous","utmost","integral","intricate","demographics","mighty","intact","intent","intriguing","merry","perpetual","spinal","susceptible","mandatory","upright","abruptly","conversely","predominantly","lest"]
+word_c=len(word)
+
+
