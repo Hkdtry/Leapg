@@ -104,8 +104,8 @@ function title() {
   const green = Math.floor(Math.random() * 256);
   const blue = Math.floor(Math.random() * 256);
   g.setColor(red, green, blue);
-  // g.setTextSize(150);
-g.font = '150px Roboto medium'
+  g.setTextSize(150);
+//g.font = '150px Roboto medium'
   g.drawString("LEAP", 100, 100);
   g.setColor(0, 0, 0);
   g.setTextSize(50);
