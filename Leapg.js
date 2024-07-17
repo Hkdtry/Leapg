@@ -57,6 +57,7 @@ const ctc = canvas.getContext('2d');
 
 window.addEventListener("keydown", (e)=>{
   const keycd = e.keyCode;
+  console.log("key_push");
   keyboard.set(e.code);
 
   // ★New!
