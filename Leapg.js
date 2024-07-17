@@ -61,7 +61,7 @@ const ctc = canvas.getContext('2d');
 window.addEventListener("keydown", (e)=>{
   const keycd = e.keyCode;
   console.log("key_push");
-  keyboard.set(e.code);
+  keyboard.set(e.key);
   keyboard.print_so();
   // ★New!
   const onShift = e.shiftKey;  // シフトキー (Boolean)
