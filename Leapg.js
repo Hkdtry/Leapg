@@ -30,7 +30,7 @@ let tit = 0;
 // g.drawGrid();
 // 描画色の設定
 // g.setColor(255, 0, 0);
-
+console.log("変数:ok")
 // セルの初期化
 cell[1][1] = 52;
 cell[1][2] = 27;
@@ -562,7 +562,7 @@ function main() {
   }
   setTimeout(main, 50);
 }
-
+console.log("function:ok")
 // メイン呼び出し
 main();
 
