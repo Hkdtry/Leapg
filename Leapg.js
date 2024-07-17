@@ -43,6 +43,9 @@ class mkeyboard{
   set(s){
     this.so = s;
   }
+  print_so(){
+    console.log(this.so);
+  }
   isPressed(co){
     if(this.so == co){
       return 1;
@@ -59,7 +62,7 @@ window.addEventListener("keydown", (e)=>{
   const keycd = e.keyCode;
   console.log("key_push");
   keyboard.set(e.code);
-
+  keyboard.print_so();
   // ★New!
   const onShift = e.shiftKey;  // シフトキー (Boolean)
   const onCtrl  = e.ctrlKey;   // コントロールキー (Boolean)
