@@ -372,8 +372,8 @@ function hi(text) {
   for (let i = 0; i < 9; i++) {
     r[i] = r[i + 1];
   }
-  delete r[9];
-  r.push(text);
+  r[9] = text;
+  
 }
 
 // リセット
