@@ -38,7 +38,7 @@ cenx = 1;
 ceny = 1;
 class mkeyboard{
   constructor(){
-  this.so = " ";
+  this.so = ' ';
   }
   set(s){
     this.so = s;
