@@ -300,7 +300,7 @@ function dele() {
                 if (delew === word[w]) {
                   sco += 50;
                   cwo += 1;
-                  // hi(word[w]);
+                  hi(word[w]);
                   for (let ws = 0; ws < s + 1; ws++) {
                     if (ix + s <= 9) {
                       cells[ix + ws][iy] = 5;
@@ -316,7 +316,7 @@ function dele() {
               }
               for (let w = 0; w < word.length; w++) {
                 if (delew === word[w]) {
-                  // hi(word[w]);
+                  hi(word[w]);
                   for (let ws = 0; ws < s + 1; ws++) {
                     if (ix + s <= 19) {
                       cells[ix][iy + ws] = 5;
