@@ -196,6 +196,7 @@ function turn() {
   t = 1;
   while (bool_t) {
     bool_t = 0;
+    console.log("turn_start")
     for (let iy = 0; iy < 20; iy++) {
       for (let ix = 0; ix < 10; ix++) {
         if (cell[ix][iy] >= 27 && bool_t === 0) {
@@ -213,12 +214,14 @@ function turn() {
             if (cenx + dx < 0 || cenx + dx > 9 || ceny + dy < 0 || ceny + dy > 19) {
               t = t + 1;
               bool_t = 1;
+              console.log("ret1")
             } else {
               if (cell[cenx + dx][ceny + dy] === 0 || cell[cenx + dx][ceny + dy] >= 27) {
                 celld[cenx + dx][ceny + dy] = cell[ix][iy];
               } else {
                 t = t + 1;
                 bool_t = 1;
+                console.log("ret2")
               }
             }
           }
@@ -226,6 +229,7 @@ function turn() {
       }
     }
   }
+  console.log("trun_finish")
   back();
 }
 
