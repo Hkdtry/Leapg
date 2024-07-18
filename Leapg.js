@@ -25,7 +25,7 @@ let chc = 1;
 let cwo = 0;
 let ranw = "";
 let tit = 0;
-
+let word = ["zsz"]
 // グリッド線の描画
 // g.drawGrid();
 // 描画色の設定
@@ -150,9 +150,9 @@ function draw() {
    g.setTextSize(20);
    g.setColor(255, 100, 200);
    g.drawString("ランダム単語", 170, 50);
-   g.drawString(str(ranw), 150, 80);
+   g.drawString(String(ranw), 150, 80);
    g.setTextSize(15);
-   g.drawString("そろえた単語数" + str(cwo), 170, 125);
+   g.drawString("そろえた単語数" + String(cwo), 170, 125);
    g.setTextSize(15);
    g.setColor(100, 150, 255);
   for (let i = 0; i < 10; i++) {
