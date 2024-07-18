@@ -2,11 +2,11 @@
 // Write, Edit and Run your Javascript code using JS Online Compiler
 
 const letter = ["", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-const cell = Array.from({length: 10}, () => Array.from({length: 20}, () => 0));
-const celld = Array.from({length: 10}, () => Array.from({length: 20}, () => 0));
-const cells = Array.from({length: 10}, () => Array.from({length: 20}, () => 0));
-const chcell = Array.from({length: 10}, () => Array.from({length: 20}, () => 0));
-const r = Array.from({length: 10}, () => [""]);
+let cell = Array.from({length: 10}, () => Array.from({length: 20}, () => 0));
+let celld = Array.from({length: 10}, () => Array.from({length: 20}, () => 0));
+let cells = Array.from({length: 10}, () => Array.from({length: 20}, () => 0));
+let chcell = Array.from({length: 10}, () => Array.from({length: 20}, () => 0));
+let r = Array.from({length: 10}, () => [""]);
 
 let sco = 0;
 let set_o = 0;
@@ -177,7 +177,7 @@ function set() {
   }
   celld = Array.from({length: 10}, () => Array.from({length: 20}, () => 0));
   set_o = 1;
-  const ch = Math.floor(Math.random() * 26) + 27;
+  let ch = Math.floor(Math.random() * 26) + 27;
   cell[4][1] = ch;
   ch = Math.floor(Math.random() * 26) + 27;
   cell[5][1] = ch;
@@ -200,11 +200,11 @@ function turn() {
       for (let ix = 0; ix < 10; ix++) {
         if (cell[ix][iy] >= 27 && bool_t === 0) {
           if (ix !== cenx || iy !== ceny) {
-            const disx = ix - cenx;
-            const disy = iy - ceny;
+            let disx = ix - cenx;
+            let disy = iy - ceny;
             for (let i = 0; i < t; i++) {
-              const dx = 1 * disy;
-              const dy = -1 * disx;
+             let dx = 1 * disy;
+              let dy = -1 * disx;
               disx = dx;
               disy = dy;
             }
