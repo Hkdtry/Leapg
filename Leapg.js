@@ -202,9 +202,10 @@ function turn() {
           if (ix !== cenx || iy !== ceny) {
             let disx = ix - cenx;
             let disy = iy - ceny;
+            let dx = 1 * disy;
+            let dy = -1 * disx;
             for (let i = 0; i < t; i++) {
-             let dx = 1 * disy;
-              let dy = -1 * disx;
+             
               disx = dx;
               disy = dy;
             }
